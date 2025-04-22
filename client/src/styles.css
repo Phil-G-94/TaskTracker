@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+@theme {
+    --color-gov-blue: #1d70b8;
+    --color-gov-blue-light: #289bff;
+    --color-gov-black: #0b0c0c;
+    --color-gov-white: #ffffff;
+    --color-gov-green: #005a30;
+    --color-gov-green-light: #007940;
+}
