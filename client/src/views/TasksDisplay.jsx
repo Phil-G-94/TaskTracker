@@ -1,6 +1,6 @@
 import TaskCard from "../components/TaskCard";
 
-export default function TasksDisplay({ taskData, taskQuantity }) {
+export default function TasksDisplay({ taskData, taskQuantity, refetchTasks }) {
     return (
         <section>
             <div className="flex flex-col">
@@ -10,7 +10,7 @@ export default function TasksDisplay({ taskData, taskQuantity }) {
             <section className="grid grid-cols-1 place-items-center items-stretch md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {taskData ? (
                     taskData.map(task => {
-                        return <TaskCard key={task.id} task={task} />;
+                        return <TaskCard key={task.id} task={task} refetchTasks={refetchTasks} />;
                     })
                 ) : (
                     <p>Loading...</p>

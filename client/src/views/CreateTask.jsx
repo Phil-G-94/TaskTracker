@@ -2,7 +2,7 @@ import TaskForm from "../components/TaskForm";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
-export default function CreateTaskView({ refetchTasks }) {
+export default function CreateTask({ refetchTasks }) {
     const handleCreateTask = async task => {
         try {
             const response = await fetch(`${API_BASE_URL}/api/create-task`, {

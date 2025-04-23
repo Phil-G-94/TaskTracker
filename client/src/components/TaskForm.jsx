@@ -1,32 +1,55 @@
 import { useState, useEffect } from "react";
+import { useTaskStatuses } from "../hooks/useTaskStatuses";
 
-export default function TaskForm({ initialData, onSubmit, submitLabel }) {
+export default function TaskForm({ initialData, onSubmit, submitLabel, closeEditModal }) {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [dueDate, setDueDate] = useState("");
+    const [status, setStatus] = useState("");
+
+    const { statuses } = useTaskStatuses();
 
     useEffect(() => {
         if (initialData) {
             setTitle(initialData.title || "");
             setDescription(initialData.description || "");
+            setStatus(initialData.status || "");
+
+            if (initialData.due_at) {
+                const date = new Date(initialData.due_at);
+                const yyyy = date.getFullYear();
+                const mm = String(date.getMonth() + 1).padStart(2, "0");
+                const dd = String(date.getDate()).padStart(2, "0");
+                const formattedDate = `${yyyy}-${mm}-${dd}`;
+                setDueDate(formattedDate);
+            } else {
+                setDueDate("");
+            }
         }
     }, [initialData]);
 
-    const handleSubmit = event => {
+    const handleSubmit = async event => {
         event.preventDefault();
 
-        const task = {
-            title,
-            description,
-            due_at: dueDate,
-        };
+        try {
+            const task = {
+                title,
+                description,
+                status,
+                due_at: dueDate,
+            };
 
-        onSubmit(task);
+            onSubmit(task);
 
-        if (!initialData) {
-            setTitle("");
-            setDescription("");
-            setDueDate("");
+            if (!initialData) {
+                setTitle("");
+                setDescription("");
+                setDueDate("");
+            }
+        } catch (error) {
+            console.log(error);
+        } finally {
+            closeEditModal();
         }
     };
 
@@ -60,8 +83,8 @@ export default function TaskForm({ initialData, onSubmit, submitLabel }) {
                 </label>
             </div>
             <div>
-                Due
                 <label htmlFor="task-due-date" className="flex flex-col w-full">
+                    Due
                     <input
                         name="task-due-date"
                         id="task-due-date"
@@ -73,9 +96,28 @@ export default function TaskForm({ initialData, onSubmit, submitLabel }) {
                     />
                 </label>
             </div>
+            {initialData && (
+                <div>
+                    <label htmlFor="status" className="flex flex-col w-full">
+                        Status
+                        <select
+                            name="status"
+                            id="status"
+                            onChange={e => setStatus(e.target.value)}
+                            className="border-2 rounded-md p-2 w-full"
+                        >
+                            {statuses.map(status => (
+                                <option key={status.value} value={status.value}>
+                                    {status.label}
+                                </option>
+                            ))}
+                        </select>
+                    </label>
+                </div>
+            )}
             <div className="flex place-content-center">
                 <button
-                    type="Submit"
+                    type="submit"
                     className="px-4 py-1 rounded-full text-sm font-medium border-2 text-black transition"
                 >
                     {submitLabel || (initialData ? "Edit Task" : "Create Task")}

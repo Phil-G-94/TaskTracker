@@ -8,3 +8,35 @@
     --color-gov-green: #005a30;
     --color-gov-green-light: #007940;
 }
+
+@layer utilities {
+    @keyframes slide-down {
+        0% {
+            opacity: 0;
+            transform: translate(-50%, -48%);
+        }
+        100% {
+            opacity: 1;
+            transform: translate(-50%, -50%);
+        }
+    }
+
+    @keyframes slide-up {
+        0% {
+            opacity: 1;
+            transform: translate(-50%, -50%);
+        }
+        100% {
+            opacity: 0;
+            transform: translate(-50%, -48%);
+        }
+    }
+
+    .animate-slide-down {
+        animation: slide-down 300ms ease-out forwards;
+    }
+
+    .animate-slide-up {
+        animation: slide-up 300ms ease-in forwards;
+    }
+}

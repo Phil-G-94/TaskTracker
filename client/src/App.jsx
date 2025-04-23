@@ -43,7 +43,7 @@ export default function App() {
             </div>
 
             <CreateTask refetchTasks={getTasks} />
-            <TasksDisplay taskData={taskData} taskQuantity={taskQuantity} />
+            <TasksDisplay taskData={taskData} taskQuantity={taskQuantity} refetchTasks={getTasks} />
         </>
     );
 }
