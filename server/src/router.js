@@ -71,6 +71,27 @@ router.get("/tasks", async (req, res, next) => {
 });
 
 /**
+ * get task (by id)
+ */
+
+router.get("/tasks/:taskId", async (req, res, next) => {
+    const { taskId } = req.params;
+
+    const result = await pool.query(
+        `
+        SELECT * FROM tasks
+        WHERE id = $1
+        RETURNING *;
+    `,
+        [taskId]
+    );
+
+    const task = result.rows[0];
+
+    res.status(200).json({ message: "Task retrieved", data: { task } });
+});
+
+/**
  * edit task
  */
 

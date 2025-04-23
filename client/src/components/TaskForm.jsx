@@ -5,7 +5,7 @@ export default function TaskForm({ initialData, onSubmit, submitLabel, closeEdit
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [dueDate, setDueDate] = useState("");
-    const [status, setStatus] = useState("");
+    const [status, setStatus] = useState("pending");
 
     const { statuses } = useTaskStatuses();
 
@@ -77,7 +77,6 @@ export default function TaskForm({ initialData, onSubmit, submitLabel, closeEdit
                         id="task-description"
                         value={description}
                         onChange={e => setDescription(e.target.value)}
-                        required
                         className="border-2 rounded-md p-2 w-full whitespace-pre-line"
                     />
                 </label>
@@ -103,6 +102,7 @@ export default function TaskForm({ initialData, onSubmit, submitLabel, closeEdit
                         <select
                             name="status"
                             id="status"
+                            value={status}
                             onChange={e => setStatus(e.target.value)}
                             className="border-2 rounded-md p-2 w-full"
                         >
