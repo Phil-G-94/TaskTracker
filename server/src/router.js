@@ -29,6 +29,7 @@ router.post("/create-task", async (req, res, next) => {
 router.get("/tasks", async (req, res, next) => {
     const result = await pool.query(`
         SELECT * FROM tasks
+        ORDER BY due_at
     `);
 
     const tasks = result.rows;

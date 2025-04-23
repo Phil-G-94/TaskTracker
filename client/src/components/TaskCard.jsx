@@ -2,10 +2,10 @@ export default function TaskCard({ task }) {
     const dueDate = new Date(task.due_at).toDateString();
 
     return (
-        <article className="w-full sm:w-[300px] bg-white border-1 border-gray-200 p-4 rounded-2xl shadow-lg transition hover:shadow-2xl hover:border-gov-black">
-            <div className="flex flex-col gap-2">
+        <article className="w-full sm:w-[300px] h-full flex flex-col justify-between bg-white border border-gray-200 p-4 rounded-2xl shadow-lg transition hover:shadow-2xl hover:border-gov-black">
+            <div className="flex flex-col justify-between grow gap-2">
                 <h3 className="text-xl font-semibold text-gray-800">{task.title}</h3>
-                <p className="text-gray-600">{task.description}</p>
+                <p className="text-gray-600 whitespace-pre-line line-clamp-2">{task.description}</p>
                 <p className="text-sm text-gray-500 font-medium">Status: {task.status}</p>
                 <p className="text-sm text-gray-400">{dueDate}</p>
 
