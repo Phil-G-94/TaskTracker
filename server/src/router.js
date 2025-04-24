@@ -192,12 +192,16 @@ router.delete(
                 [taskId]
             );
 
-            const deletedTask = result.rows[0];
+            const task = result.rows[0];
+
+            if (!task) {
+                return res.status(404).json({ message: "Selected task doesn't exist. Choose another." });
+            }
 
             res.status(200).json({
                 message: `Deleted task`,
                 data: {
-                    task: deletedTask,
+                    task,
                 },
             });
         } catch (error) {

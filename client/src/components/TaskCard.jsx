@@ -1,29 +1,24 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import UseAnimations from "react-useanimations";
 import trash2 from "react-useanimations/lib/trash2";
 import edit from "react-useanimations/lib/edit";
 
 import Modal from "./Modal";
 import EditTask from "../views/EditTask";
+import { formatStatus, formatDate, formatErrors } from "../utils/utils";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 export default function TaskCard({ task, refetchTasks }) {
-    console.log(task);
-
     const [showEditModal, setShowEditModal] = useState(false);
+    const [errors, setErrors] = useState(null);
 
     const openEditModal = () => setShowEditModal(true);
     const closeEditModal = () => setShowEditModal(false);
 
-    const formatStatus = status => {
-        return status.replace(/_/g, " ").replace(/\b\w/g, l => l.toUpperCase());
-    };
-
     const formattedStatus = formatStatus(task.status);
-
-    const dueDate = new Date(task.due_at).toLocaleDateString();
-    const updatedAt = new Date(task.updated_at).toLocaleDateString();
+    const dueDate = formatDate(task.due_at);
+    const updatedAt = formatDate(task.updated_at);
 
     const handleDeleteTask = async taskId => {
         try {
@@ -32,17 +27,32 @@ export default function TaskCard({ task, refetchTasks }) {
                 headers: { "Content-Type": "application/json" },
             });
 
-            if (!response.ok) {
-                throw new Error("Failed to delete task. Please try again.");
-            }
+            const result = await response.json();
 
-            await response.json();
+            if (!response.ok) {
+                const formattedErrors = result?.errors
+                    ? formatErrors(result.errors)
+                    : { message: "Failed to delete task. Please try again." };
+
+                setErrors(formattedErrors);
+                return;
+            }
 
             refetchTasks();
         } catch (error) {
-            console.log(error);
+            setErrors({ message: error.message || "Unexpected error occurred." });
         }
     };
+
+    useEffect(() => {
+        if (errors) {
+            const timer = setTimeout(() => {
+                setErrors(null);
+            }, 4000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [errors]);
 
     return (
         <article className="w-full sm:w-[300px] h-full flex flex-col justify-between bg-white border border-gray-200 p-4 rounded-2xl shadow-lg transition hover:shadow-2xl hover:border-gov-black">
@@ -66,6 +76,10 @@ export default function TaskCard({ task, refetchTasks }) {
                     >
                         <UseAnimations animation={edit} strokeColor="#FFFFFF" title="Edit" />
                     </button>
+                </div>
+                <div className="min-h-[24px] transition-all duration-300">
+                    {errors?.taskId && <p className="text-center text-red-600">{errors.taskId}</p>}
+                    {errors && <p className="text-center text-red-600">{errors.message}</p>}
                 </div>
             </div>
             {showEditModal && (
