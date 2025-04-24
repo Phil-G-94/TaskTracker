@@ -1,7 +1,11 @@
 import express from "express";
 import { pool } from "../index.js";
+import { validationHandler } from "./middleware/validationHandler.js";
+import { body, param } from "express-validator";
 
 const router = express.Router();
+
+const validStatuses = ["pending", "in_progress", "completed"];
 
 /**
  * get statuses
@@ -17,9 +21,8 @@ router.get("/statuses", async (req, res) => {
         }));
 
         res.status(200).json({ data: { statuses } });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: "Failed to fetch statuses" });
+    } catch (error) {
+        next(error);
     }
 });
 
@@ -27,116 +30,180 @@ router.get("/statuses", async (req, res) => {
  * create task
  */
 
-router.post("/create-task", async (req, res, next) => {
-    const { title, description, status = "pending", due_at } = req.body;
+router.post(
+    "/create-task",
+    [
+        body("title").trim().notEmpty().withMessage("Title is required").escape(),
+        body("description").optional().isString().escape(),
+        body("status").isIn(validStatuses).withMessage("Invalid status"),
+        body("due_at").isISO8601().withMessage("Invalid date format"),
+    ],
+    validationHandler,
+    async (req, res, next) => {
+        const { title, description, status = "pending", due_at } = req.body;
 
-    const result = await pool.query(
-        `
-        INSERT INTO tasks (title, description, status, due_at)
-        VALUES ($1, $2, $3, $4)
-        RETURNING *;
-    `,
-        [title, description ?? null, status, due_at ?? null]
-    );
+        try {
+            const result = await pool.query(
+                `
+            INSERT INTO tasks (title, description, status, due_at)
+            VALUES ($1, $2, $3, $4)
+            RETURNING *;
+        `,
+                [title, description ?? null, status, due_at ?? null]
+            );
 
-    res.status(200).json({
-        message: "Created task",
-        data: {
-            task: result,
-        },
-    });
-});
+            res.status(200).json({
+                message: "Created task",
+                data: {
+                    task: result.rows[0],
+                },
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+);
 
 /**
  * get tasks
  */
 
 router.get("/tasks", async (req, res, next) => {
-    const result = await pool.query(`
-        SELECT * FROM tasks
-        ORDER BY due_at
-    `);
+    try {
+        const result = await pool.query(`
+            SELECT * FROM tasks
+            ORDER BY due_at
+        `);
 
-    const tasks = result.rows;
+        const tasks = result.rows;
 
-    const quantity = result.rowCount;
+        const quantity = result.rowCount;
 
-    res.status(200).json({
-        message: "Retrieved tasks",
-        data: {
-            tasks,
-            quantity,
-        },
-    });
+        res.status(200).json({
+            message: "Retrieved tasks",
+            data: {
+                tasks,
+                quantity,
+            },
+        });
+    } catch (error) {
+        next(error);
+    }
 });
 
 /**
  * get task (by id)
  */
 
-router.get("/tasks/:taskId", async (req, res, next) => {
-    const { taskId } = req.params;
+router.get(
+    "/tasks/:taskId",
+    [param("taskId").isInt().withMessage("Invalid task ID")],
+    validationHandler,
+    async (req, res, next) => {
+        const { taskId } = req.params;
 
-    const result = await pool.query(
-        `
-        SELECT * FROM tasks
-        WHERE id = $1
-        RETURNING *;
-    `,
-        [taskId]
-    );
+        try {
+            const result = await pool.query(
+                `
+            SELECT * FROM tasks
+            WHERE id = $1;
+        `,
+                [taskId]
+            );
 
-    const task = result.rows[0];
+            const task = result.rows[0];
 
-    res.status(200).json({ message: "Task retrieved", data: { task } });
-});
+            if (!task) {
+                return res.status(404).json({ error: "Task not found" });
+            }
+
+            res.status(200).json({ message: "Task retrieved", data: { task } });
+        } catch (error) {
+            next(error);
+        }
+    }
+);
 
 /**
  * edit task
  */
 
-router.patch("/tasks/:taskId", async (req, res, next) => {
-    const { taskId } = req.params;
+router.patch(
+    "/tasks/:taskId",
+    [
+        param("taskId").isInt().withMessage("Invalid task ID"),
+        body("title").trim().notEmpty().withMessage("Title is required").escape(),
+        body("description").optional().isString().escape(),
+        body("status").isIn(validStatuses).withMessage("Invalid status"),
+        body("due_at").isISO8601().withMessage("Invalid date format"),
+    ],
+    validationHandler,
+    async (req, res, next) => {
+        const { taskId } = req.params;
 
-    const { title, description, status, due_at } = req.body;
+        const { title, description, status, due_at } = req.body;
 
-    const result = await pool.query(
-        `
-        UPDATE tasks
-        SET title = $1,
-            description = $2,
-            status = $3,
-            due_at = $4
-        WHERE id=${taskId}
-        RETURNING *;
-    `,
-        [title, description, status, due_at]
-    );
+        try {
+            const result = await pool.query(
+                `
+            UPDATE tasks
+            SET title = $1,
+                description = $2,
+                status = $3,
+                due_at = $4
+            WHERE id=$5
+            RETURNING *;
+        `,
+                [title, description, status, due_at, taskId]
+            );
 
-    const editedTask = result.rows[0];
+            const editedTask = result.rows[0];
 
-    res.status(200).json({ message: `Edited task: ${title}`, editedTask });
-});
+            res.status(200).json({
+                message: `Edited task: ${title}`,
+                data: {
+                    task: editedTask,
+                },
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+);
 
 /**
  * delete task
  */
 
-router.delete("/tasks/:taskId", async (req, res, next) => {
-    const { taskId } = req.params;
+router.delete(
+    "/tasks/:taskId",
+    [param("taskId").isInt().withMessage("Invalid task ID")],
+    validationHandler,
+    async (req, res, next) => {
+        const { taskId } = req.params;
 
-    const result = await pool.query(
-        `
-        DELETE FROM tasks
-        WHERE id = $1
-        RETURNING *;
-    `,
-        [taskId]
-    );
+        try {
+            const result = await pool.query(
+                `
+            DELETE FROM tasks
+            WHERE id = $1
+            RETURNING *;
+        `,
+                [taskId]
+            );
 
-    const deletedTask = result.rows[0];
+            const deletedTask = result.rows[0];
 
-    res.status(200).json({ message: `Deleted task`, deletedTask });
-});
+            res.status(200).json({
+                message: `Deleted task`,
+                data: {
+                    task: deletedTask,
+                },
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+);
 
 export default router;

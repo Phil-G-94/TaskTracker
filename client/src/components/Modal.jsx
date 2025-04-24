@@ -1,4 +1,4 @@
-import { Children, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
 const Backdrop = ({ isClosing, handleClose }) => {

@@ -49,7 +49,9 @@ export default function TaskForm({ initialData, onSubmit, submitLabel, closeEdit
         } catch (error) {
             console.log(error);
         } finally {
-            closeEditModal();
+            if (closeEditModal) {
+                closeEditModal();
+            }
         }
     };
 
