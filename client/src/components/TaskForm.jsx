@@ -56,46 +56,46 @@ export default function TaskForm({ initialData, onSubmit, submitLabel, closeEdit
     };
 
     return (
-        <form onSubmit={handleSubmit} className="max-w-2xl mx-auto p-4 space-y-6">
+        <form onSubmit={handleSubmit} className="max-w-2xl mx-auto p-4 space-y-8">
             <div>
                 <label htmlFor="task-name" className="flex flex-col w-full">
                     Name
-                    <input
-                        name="task-name"
-                        id="task-name"
-                        type="text"
-                        value={title}
-                        onChange={e => setTitle(e.target.value)}
-                        required
-                        className="border-2 rounded-md p-2 w-full"
-                    />
                 </label>
+                <input
+                    name="task-name"
+                    id="task-name"
+                    type="text"
+                    value={title}
+                    onChange={e => setTitle(e.target.value)}
+                    required
+                    className="border-2 p-2 w-full mt-2 focus:outline-none focus:ring-4 focus:ring-gov-yellow focus:outline-4 focus:outline-gov-yellow box-border"
+                />
             </div>
             <div>
                 <label htmlFor="task-description" className="flex flex-col w-full">
                     Description
-                    <textarea
-                        name="task-description"
-                        id="task-description"
-                        value={description}
-                        onChange={e => setDescription(e.target.value)}
-                        className="border-2 rounded-md p-2 w-full whitespace-pre-line"
-                    />
                 </label>
+                <textarea
+                    name="task-description"
+                    id="task-description"
+                    value={description}
+                    onChange={e => setDescription(e.target.value)}
+                    className="border-2 p-2 w-full mt-2 focus:outline-none focus:ring-4 focus:ring-gov-yellow focus:outline-4 focus:outline-gov-yellow box-border"
+                />
             </div>
             <div>
                 <label htmlFor="task-due-date" className="flex flex-col w-full">
                     Due
-                    <input
-                        name="task-due-date"
-                        id="task-due-date"
-                        value={dueDate}
-                        onChange={e => setDueDate(e.target.value)}
-                        type="date"
-                        required
-                        className="border-2 rounded-md p-2 w-full"
-                    />
                 </label>
+                <input
+                    name="task-due-date"
+                    id="task-due-date"
+                    value={dueDate}
+                    onChange={e => setDueDate(e.target.value)}
+                    type="date"
+                    required
+                    className="border-2 p-2 w-full mt-2 focus:outline-none focus:ring-4 focus:ring-gov-yellow focus:outline-4 focus:outline-gov-yellow box-border"
+                />
             </div>
             {initialData && (
                 <div>
@@ -106,7 +106,7 @@ export default function TaskForm({ initialData, onSubmit, submitLabel, closeEdit
                             id="status"
                             value={status}
                             onChange={e => setStatus(e.target.value)}
-                            className="border-2 rounded-md p-2 w-full"
+                            className="border-2 p-2 w-full"
                         >
                             {statuses.map(status => (
                                 <option key={status.value} value={status.value}>
@@ -120,9 +120,9 @@ export default function TaskForm({ initialData, onSubmit, submitLabel, closeEdit
             <div className="flex place-content-center">
                 <button
                     type="submit"
-                    className="px-4 py-1 rounded-full text-sm font-medium border-2 text-black transition"
+                    className="bg-gov-green-light hover:bg-gov-green focus:bg-gov-yellow focus:text-gov-black active:outline-2 active:outline-gov-yellow active:bg-gov-green active:text-gov-white px-4 py-1 text-sm font-medium border-b-2 border-b-black text-gov-white transition box-border"
                 >
-                    {submitLabel || (initialData ? "Edit Task" : "Create Task")}
+                    {submitLabel || (initialData ? "Save Edit" : "Create Task")}
                 </button>
             </div>
         </form>

@@ -42,8 +42,14 @@ export default function App() {
                 <div className="h-2 bg-gov-blue"></div>
             </div>
 
-            <CreateTask refetchTasks={getTasks} />
-            <TasksDisplay taskData={taskData} taskQuantity={taskQuantity} refetchTasks={getTasks} />
+            <div className="flex flex-col gap-4">
+                <section>
+                    <CreateTask refetchTasks={getTasks} />
+                </section>
+                <section>
+                    <TasksDisplay taskData={taskData} taskQuantity={taskQuantity} refetchTasks={getTasks} />
+                </section>
+            </div>
         </>
     );
 }

@@ -2,11 +2,14 @@
 
 @theme {
     --color-gov-blue: #1d70b8;
-    --color-gov-blue-light: #289bff;
+    --color-gov-blue-light: #5694ca;
     --color-gov-black: #0b0c0c;
     --color-gov-white: #ffffff;
-    --color-gov-green: #005a30;
+    --color-gov-green: #00703c;
     --color-gov-green-light: #007940;
+
+    /* focus */
+    --color-gov-yellow: #ffdd00;
 }
 
 @layer utilities {
