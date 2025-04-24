@@ -17,17 +17,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 /**
- * routes
- */
-app.use("/api", router);
-
-/**
  * check
  */
 
 app.get("/", (req, res) => {
     res.status(200).json({ message: "API is running" });
 });
+
+/**
+ * routes
+ */
+app.use("/api", router);
 
 /**
  * error handler
