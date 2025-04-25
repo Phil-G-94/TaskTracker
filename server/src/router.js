@@ -8,7 +8,7 @@ const router = express.Router();
 const validStatuses = ["pending", "in_progress", "completed"];
 
 /**
- * get statuses
+ * GET /api/statuses
  */
 
 router.get("/statuses", async (req, res) => {
@@ -27,7 +27,7 @@ router.get("/statuses", async (req, res) => {
 });
 
 /**
- * create task
+ * POST /api/create-task
  */
 
 router.post(
@@ -65,7 +65,7 @@ router.post(
 );
 
 /**
- * get tasks
+ * GET /api/tasks
  */
 
 router.get("/tasks", async (req, res, next) => {
@@ -92,7 +92,7 @@ router.get("/tasks", async (req, res, next) => {
 });
 
 /**
- * get task (by id)
+ * GET /api/tasks/:taskId - not currently in use by client
  */
 
 router.get(
@@ -125,7 +125,7 @@ router.get(
 );
 
 /**
- * edit task
+ * PATCH /api/tasks/:taskId
  */
 
 router.patch(
@@ -172,7 +172,7 @@ router.patch(
 );
 
 /**
- * delete task
+ * DELETE /api/tasks/:taskId
  */
 
 router.delete(
