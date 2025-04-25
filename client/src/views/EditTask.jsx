@@ -13,6 +13,7 @@ export default function EditTask({
     refetchTasks,
 }) {
     const [taskData, setTaskData] = useState(null);
+    const [errors, setErrors] = useState(null);
 
     const handleEditTask = async task => {
         try {
@@ -22,15 +23,18 @@ export default function EditTask({
                 body: JSON.stringify(task),
             });
 
-            if (!response.ok) {
-                throw new Error("Failed to edit task. Please try again.");
-            }
+            const result = await response.json();
 
-            await response.json();
+            if (!response.ok) {
+                setErrors(result?.errors);
+
+                return;
+            }
 
             refetchTasks();
         } catch (error) {
-            console.log(error);
+            const message = error instanceof Error ? error.message : String(error);
+            setErrors([{ field: null, message }]);
         }
     };
 
@@ -44,5 +48,20 @@ export default function EditTask({
         setTaskData(task);
     }, [taskTitle, taskDescription, dueDate, taskStatus]);
 
-    return <TaskForm onSubmit={handleEditTask} initialData={taskData} closeEditModal={closeEditModal} />;
+    useEffect(() => {
+        if (errors) {
+            const timer = setTimeout(() => {
+                setErrors(null);
+            }, 4000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [errors]);
+
+    return (
+        <>
+            <TaskForm onSubmit={handleEditTask} initialData={taskData} closeEditModal={closeEditModal} />
+            <ErrorMessages errors={errors} />
+        </>
+    );
 }

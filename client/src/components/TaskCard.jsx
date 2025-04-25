@@ -5,7 +5,8 @@ import edit from "react-useanimations/lib/edit";
 
 import Modal from "./Modal";
 import EditTask from "../views/EditTask";
-import { formatStatus, formatDate, formatErrors } from "../utils/utils";
+import { formatStatus, formatDate } from "../utils/utils";
+import ErrorMessages from "./Error";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
@@ -30,17 +31,15 @@ export default function TaskCard({ task, refetchTasks }) {
             const result = await response.json();
 
             if (!response.ok) {
-                const formattedErrors = result?.errors
-                    ? formatErrors(result.errors)
-                    : { message: "Failed to delete task. Please try again." };
+                setErrors(result?.errors);
 
-                setErrors(formattedErrors);
                 return;
             }
 
             refetchTasks();
         } catch (error) {
-            setErrors({ message: error.message || "Unexpected error occurred." });
+            const message = error instanceof Error ? error.message : String(error);
+            setErrors([{ field: null, message }]);
         }
     };
 
@@ -77,10 +76,7 @@ export default function TaskCard({ task, refetchTasks }) {
                         <UseAnimations animation={edit} strokeColor="#FFFFFF" title="Edit" />
                     </button>
                 </div>
-                <div className="min-h-[24px] transition-all duration-300">
-                    {errors?.taskId && <p className="text-center text-red-600">{errors.taskId}</p>}
-                    {errors && <p className="text-center text-red-600">{errors.message}</p>}
-                </div>
+                <ErrorMessages errors={errors} />
             </div>
             {showEditModal && (
                 <Modal closeEditModal={closeEditModal}>

@@ -58,12 +58,12 @@ export default function TaskForm({ initialData, onSubmit, submitLabel, closeEdit
     return (
         <form onSubmit={handleSubmit} className="max-w-2xl mx-auto p-4 space-y-8">
             <div>
-                <label htmlFor="task-name" className="flex flex-col w-full">
-                    Name
+                <label htmlFor="task-title" className="flex flex-col w-full">
+                    Title
                 </label>
                 <input
-                    name="task-name"
-                    id="task-name"
+                    name="task-title"
+                    id="task-title"
                     type="text"
                     value={title}
                     onChange={e => setTitle(e.target.value)}
@@ -80,6 +80,7 @@ export default function TaskForm({ initialData, onSubmit, submitLabel, closeEdit
                     id="task-description"
                     value={description}
                     onChange={e => setDescription(e.target.value)}
+                    required
                     className="border-2 p-2 w-full mt-2 focus:outline-none focus:ring-4 focus:ring-gov-yellow focus:outline-4 focus:outline-gov-yellow box-border"
                 />
             </div>
@@ -93,7 +94,6 @@ export default function TaskForm({ initialData, onSubmit, submitLabel, closeEdit
                     value={dueDate}
                     onChange={e => setDueDate(e.target.value)}
                     type="date"
-                    required
                     className="border-2 p-2 w-full mt-2 focus:outline-none focus:ring-4 focus:ring-gov-yellow focus:outline-4 focus:outline-gov-yellow box-border"
                 />
             </div>

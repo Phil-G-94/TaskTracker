@@ -1,8 +1,12 @@
+import { useState, useEffect } from "react";
 import TaskForm from "../components/TaskForm";
+import ErrorMessages from "../components/Error";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 export default function CreateTask({ refetchTasks }) {
+    const [errors, setErrors] = useState(null);
+
     const handleCreateTask = async task => {
         try {
             const response = await fetch(`${API_BASE_URL}/api/create-task`, {
@@ -11,17 +15,36 @@ export default function CreateTask({ refetchTasks }) {
                 body: JSON.stringify(task),
             });
 
-            if (!response.ok) {
-                throw new Error("Failed to create task. Please try again.");
-            }
+            const result = await response.json();
 
-            await response.json();
+            if (!response.ok) {
+                setErrors(result?.errors);
+
+                return;
+            }
 
             refetchTasks();
         } catch (error) {
-            console.log(error);
+            const message = error instanceof Error ? error.message : String(error);
+            setErrors([{ field: null, message }]);
         }
     };
 
-    return <TaskForm onSubmit={handleCreateTask} submitLabel="Create Task" />;
+    useEffect(() => {
+        if (errors) {
+            const timer = setTimeout(() => {
+                setErrors(null);
+            }, 4000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [errors]);
+
+    return (
+        <>
+            <TaskForm onSubmit={handleCreateTask} submitLabel="Create Task" />
+
+            <ErrorMessages errors={errors} />
+        </>
+    );
 }
