@@ -4,6 +4,7 @@ import { createPortal } from "react-dom";
 const Backdrop = ({ isClosing, handleClose }) => {
     return (
         <div
+            role="presentation"
             onClick={() => handleClose()}
             className={`fixed inset-0 z-[999] bg-black/75 transition-opacity duration-300 ${
                 isClosing ? "opacity-0" : "opacity-100"
@@ -26,24 +27,43 @@ const ModalOverlay = ({ isClosing, children }) => {
 };
 
 export default function Modal({ children, closeEditModal }) {
-    const portalElement = document.querySelector("#modal");
-
+    // const portalElement = document.querySelector("#modal");
+    // const [isClosing, setIsClosing] = useState(false);
+    // const handleClose = () => {
+    //     setIsClosing(true);
+    // };
+    // useEffect(() => {
+    //     if (isClosing) {
+    //         const timer = setTimeout(() => {
+    //             closeEditModal();
+    //         }, 300);
+    //         return () => clearTimeout(timer);
+    //     }
+    // }, [isClosing, closeEditModal]);
+    // return (
+    //     <>
+    //         {createPortal(<Backdrop isClosing={isClosing} handleClose={handleClose} />, portalElement)}
+    //         {createPortal(<ModalOverlay isClosing={isClosing}>{children}</ModalOverlay>, portalElement)}
+    //     </>
+    // );
+    const [portalElement, setPortalElement] = useState(null);
     const [isClosing, setIsClosing] = useState(false);
-
+    useEffect(() => {
+        const el = document.querySelector("#modal");
+        setPortalElement(el);
+    }, []);
     const handleClose = () => {
         setIsClosing(true);
     };
-
     useEffect(() => {
         if (isClosing) {
             const timer = setTimeout(() => {
                 closeEditModal();
             }, 300);
-
             return () => clearTimeout(timer);
         }
     }, [isClosing, closeEditModal]);
-
+    if (!portalElement) return null;
     return (
         <>
             {createPortal(<Backdrop isClosing={isClosing} handleClose={handleClose} />, portalElement)}
