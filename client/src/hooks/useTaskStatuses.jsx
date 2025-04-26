@@ -15,7 +15,7 @@ export const useTaskStatuses = () => {
 
                 const result = await response.json();
 
-                const statusData = result.data.statuses;
+                const statusData = result.data?.statuses;
 
                 setStatuses(statusData);
             } catch (err) {

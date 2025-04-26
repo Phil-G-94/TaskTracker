@@ -56,7 +56,7 @@ export default function TaskForm({ initialData, onSubmit, submitLabel, closeEdit
     };
 
     return (
-        <form onSubmit={handleSubmit} className="max-w-2xl mx-auto p-4 space-y-8">
+        <form onSubmit={handleSubmit} role="form" aria-label="task form" className="max-w-2xl mx-auto p-4 space-y-8">
             <div>
                 <label htmlFor="task-title" className="flex flex-col w-full">
                     Title
