@@ -27,25 +27,6 @@ const ModalOverlay = ({ isClosing, children }) => {
 };
 
 export default function Modal({ children, closeEditModal }) {
-    // const portalElement = document.querySelector("#modal");
-    // const [isClosing, setIsClosing] = useState(false);
-    // const handleClose = () => {
-    //     setIsClosing(true);
-    // };
-    // useEffect(() => {
-    //     if (isClosing) {
-    //         const timer = setTimeout(() => {
-    //             closeEditModal();
-    //         }, 300);
-    //         return () => clearTimeout(timer);
-    //     }
-    // }, [isClosing, closeEditModal]);
-    // return (
-    //     <>
-    //         {createPortal(<Backdrop isClosing={isClosing} handleClose={handleClose} />, portalElement)}
-    //         {createPortal(<ModalOverlay isClosing={isClosing}>{children}</ModalOverlay>, portalElement)}
-    //     </>
-    // );
     const [portalElement, setPortalElement] = useState(null);
     const [isClosing, setIsClosing] = useState(false);
     useEffect(() => {
