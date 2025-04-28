@@ -33,19 +33,19 @@ server
 
 ## <img src="https://gist.githubusercontent.com/Phil-G-94/b0921d2344ee81afb6b7a4c8881f3803/raw/d59ec2cc780d776a946c11afbd94eee3ffbcc0cb/laptop.svg" /> Local
 
-To run the project locally, please:
+To run the project locally:
 
-1. clone the repository by navigating to a desired directory in your terminal and running
+1. Clone the repository by navigating to a desired directory in your terminal and running
 
 `git clone https://github.com/Phil-G-94/TaskTracker.git`
 
-2. install the required packages for both `client/` and `server/`. From the root directory, run:
+2. Install the required packages for both `client/` and `server/`. From the root directory, run:
 
 `cd client/ ; npm install`
 
 `cd /server ; npm install`
 
-3. open up a terminal for each directory and run:
+3. Open up a terminal for each directory and run:
 
 `npm run dev` to start the project in development mode, or
 
