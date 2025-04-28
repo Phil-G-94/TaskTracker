@@ -35,7 +35,7 @@ server
 
 To run the project locally, please:
 
-1. clone the repository by running navigating to a desired directory in your terminal and running
+1. clone the repository by navigating to a desired directory in your terminal and running
 
 `git clone https://github.com/Phil-G-94/TaskTracker.git`
 
