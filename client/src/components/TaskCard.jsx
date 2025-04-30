@@ -65,13 +65,13 @@ export default function TaskCard({ task, refetchTasks }) {
                 <div className="flex flex-row justify-center gap-3 mt-4">
                     <button
                         onClick={() => handleDeleteTask(task.id)}
-                        className="bg-gov-green-light hover:bg-gov-green px-4 py-1 text-sm font-medium border-b-2 border-b-black text-white transition"
+                        className="bg-gov-green-light hover:bg-gov-green hover:cursor-pointer px-4 py-1 text-sm font-medium border-b-2 border-b-black text-white transition"
                     >
                         <UseAnimations animation={trash2} strokeColor="#FFFFFF" title="Delete" />
                     </button>
                     <button
                         onClick={openEditModal}
-                        className="bg-gov-green-light hover:bg-gov-green px-4 py-1 text-sm font-medium border-b-2 border-b-black text-white transition"
+                        className="bg-gov-green-light hover:bg-gov-green hover:cursor-pointer px-4 py-1 text-sm font-medium border-b-2 border-b-black text-white transition"
                     >
                         <UseAnimations animation={edit} strokeColor="#FFFFFF" title="Edit" />
                     </button>

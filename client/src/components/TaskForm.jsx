@@ -120,7 +120,7 @@ export default function TaskForm({ initialData, onSubmit, submitLabel, closeEdit
             <div className="flex place-content-center">
                 <button
                     type="submit"
-                    className="bg-gov-green-light hover:bg-gov-green focus:bg-gov-yellow focus:text-gov-black active:outline-2 active:outline-gov-yellow active:bg-gov-green active:text-gov-white px-4 py-1 text-sm font-medium border-b-2 border-b-black text-gov-white transition box-border"
+                    className="bg-gov-green-light hover:bg-gov-green focus:bg-gov-yellow focus:text-gov-black active:outline-2 active:outline-gov-yellow active:bg-gov-green active:text-gov-white hover:cursor-pointer px-4 py-1 text-sm font-medium border-b-2 border-b-black text-gov-white transition box-border"
                 >
                     {submitLabel || (initialData ? "Save Edit" : "Create Task")}
                 </button>
