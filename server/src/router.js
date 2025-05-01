@@ -92,7 +92,7 @@ router.get("/tasks", async (req, res, next) => {
 });
 
 /**
- * GET /api/tasks/:taskId - not currently in use by client
+ * GET /api/tasks/:taskId - work in progress
  */
 
 router.get(
