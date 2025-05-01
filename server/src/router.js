@@ -103,7 +103,7 @@ router.get(
         const { taskId } = req.params;
 
         try {
-            const result = await pool.query(
+            const taskResult = await pool.query(
                 `
             SELECT * FROM tasks
             WHERE id = $1;
@@ -111,13 +111,26 @@ router.get(
                 [taskId]
             );
 
-            const task = result.rows[0];
+            const task = taskResult.rows[0];
+
+            const notesResult = await pool.query(
+                `
+                    SELECT content, created_at FROM notes WHERE task_id = $1 ORDER BY created_at ASC
+                `,
+                [taskId]
+            );
+
+            const notes = notesResult.rows;
 
             if (!task) {
                 return res.status(404).json({ error: "Task not found" });
             }
 
-            res.status(200).json({ message: "Task retrieved", data: { task } });
+            if (!notes) {
+                return res.status(404).json({ error: "Notes not found" });
+            }
+
+            res.status(200).json({ message: "Task retrieved", data: { task, notes } });
         } catch (error) {
             next(error);
         }

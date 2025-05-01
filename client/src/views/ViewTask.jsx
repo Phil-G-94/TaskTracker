@@ -7,6 +7,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 export default function ViewTask() {
     const [task, setTask] = useState(null);
+    const [notes, setNotes] = useState(null);
     const [errors, setErrors] = useState(null);
     const params = useParams();
 
@@ -28,6 +29,7 @@ export default function ViewTask() {
                 }
 
                 setTask(result.data.task);
+                setNotes(result.data.notes);
             } catch (error) {
                 const message = error instanceof Error ? error.message : String(error);
                 setErrors([{ field: null, message }]);
@@ -39,7 +41,7 @@ export default function ViewTask() {
 
     return (
         <>
-            <Task task={task} />
+            <Task task={task} notes={notes} />
             <ErrorMessages errors={errors} />
         </>
     );

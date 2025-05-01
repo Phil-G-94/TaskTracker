@@ -3,8 +3,8 @@ import loading2 from "react-useanimations/lib/loading2";
 
 import { formatStatus, formatDate } from "../utils/utils";
 
-export default function Task({ task }) {
-    if (!task) {
+export default function Task({ task, notes }) {
+    if (!task && !notes) {
         return (
             <div className="flex justify-center items-center w-full h-full flex-grow mt-44">
                 <UseAnimations animation={loading2} size={100} fillColor="#1D70B8" />
