@@ -62,7 +62,7 @@ export default function EditTask({
     return (
         <>
             <TaskForm onSubmit={handleEditTask} initialData={taskData} closeEditModal={closeEditModal} />
-            <ErrorMessages errors={errors} />
+            {errors && <ErrorMessages errors={errors} />}
         </>
     );
 }

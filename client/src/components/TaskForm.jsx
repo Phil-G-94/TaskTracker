@@ -6,6 +6,7 @@ export default function TaskForm({ initialData, onSubmit, submitLabel, closeEdit
     const [description, setDescription] = useState("");
     const [dueDate, setDueDate] = useState("");
     const [status, setStatus] = useState("pending");
+    const [errors, setErrors] = useState(null);
 
     const { statuses } = useTaskStatuses();
 
@@ -47,7 +48,8 @@ export default function TaskForm({ initialData, onSubmit, submitLabel, closeEdit
                 setDueDate("");
             }
         } catch (error) {
-            console.log(error);
+            const message = error instanceof Error ? error.message : String(error);
+            setErrors([{ field: null, message }]);
         } finally {
             if (closeEditModal) {
                 closeEditModal();
@@ -56,75 +58,83 @@ export default function TaskForm({ initialData, onSubmit, submitLabel, closeEdit
     };
 
     return (
-        <form onSubmit={handleSubmit} role="form" aria-label="task form" className="max-w-2xl mx-auto p-4 space-y-8">
-            <div>
-                <label htmlFor="task-title" className="flex flex-col w-full">
-                    Title
-                </label>
-                <input
-                    name="task-title"
-                    id="task-title"
-                    type="text"
-                    value={title}
-                    onChange={e => setTitle(e.target.value)}
-                    required
-                    className="border-2 p-2 w-full mt-2 focus:outline-none focus:ring-4 focus:ring-gov-yellow focus:outline-4 focus:outline-gov-yellow box-border"
-                />
-            </div>
-            <div>
-                <label htmlFor="task-description" className="flex flex-col w-full">
-                    Description
-                </label>
-                <textarea
-                    name="task-description"
-                    id="task-description"
-                    value={description}
-                    onChange={e => setDescription(e.target.value)}
-                    required
-                    className="border-2 p-2 w-full mt-2 focus:outline-none focus:ring-4 focus:ring-gov-yellow focus:outline-4 focus:outline-gov-yellow box-border"
-                />
-            </div>
-            <div>
-                <label htmlFor="task-due-date" className="flex flex-col w-full">
-                    Due
-                </label>
-                <input
-                    name="task-due-date"
-                    id="task-due-date"
-                    value={dueDate}
-                    onChange={e => setDueDate(e.target.value)}
-                    type="date"
-                    className="border-2 p-2 w-full mt-2 focus:outline-none focus:ring-4 focus:ring-gov-yellow focus:outline-4 focus:outline-gov-yellow box-border"
-                />
-            </div>
-            {initialData && (
+        <>
+            <form
+                onSubmit={handleSubmit}
+                role="form"
+                aria-label="task form"
+                className="max-w-2xl mx-auto p-4 space-y-8"
+            >
                 <div>
-                    <label htmlFor="status" className="flex flex-col w-full">
-                        Status
-                        <select
-                            name="status"
-                            id="status"
-                            value={status}
-                            onChange={e => setStatus(e.target.value)}
-                            className="border-2 p-2 w-full"
-                        >
-                            {statuses.map(status => (
-                                <option key={status.value} value={status.value}>
-                                    {status.label}
-                                </option>
-                            ))}
-                        </select>
+                    <label htmlFor="task-title" className="flex flex-col w-full">
+                        Title
                     </label>
+                    <input
+                        name="task-title"
+                        id="task-title"
+                        type="text"
+                        value={title}
+                        onChange={e => setTitle(e.target.value)}
+                        required
+                        className="border-2 p-2 w-full mt-2 focus:outline-none focus:ring-4 focus:ring-gov-yellow focus:outline-4 focus:outline-gov-yellow box-border"
+                    />
                 </div>
-            )}
-            <div className="flex place-content-center">
-                <button
-                    type="submit"
-                    className="bg-gov-green-light hover:bg-gov-green focus:bg-gov-yellow focus:text-gov-black active:outline-2 active:outline-gov-yellow active:bg-gov-green active:text-gov-white hover:cursor-pointer px-4 py-1 text-sm font-medium border-b-2 border-b-black text-gov-white transition box-border"
-                >
-                    {submitLabel || (initialData ? "Save Edit" : "Create Task")}
-                </button>
-            </div>
-        </form>
+                <div>
+                    <label htmlFor="task-description" className="flex flex-col w-full">
+                        Description
+                    </label>
+                    <textarea
+                        name="task-description"
+                        id="task-description"
+                        value={description}
+                        onChange={e => setDescription(e.target.value)}
+                        required
+                        className="border-2 p-2 w-full mt-2 focus:outline-none focus:ring-4 focus:ring-gov-yellow focus:outline-4 focus:outline-gov-yellow box-border"
+                    />
+                </div>
+                <div>
+                    <label htmlFor="task-due-date" className="flex flex-col w-full">
+                        Due
+                    </label>
+                    <input
+                        name="task-due-date"
+                        id="task-due-date"
+                        value={dueDate}
+                        onChange={e => setDueDate(e.target.value)}
+                        type="date"
+                        className="border-2 p-2 w-full mt-2 focus:outline-none focus:ring-4 focus:ring-gov-yellow focus:outline-4 focus:outline-gov-yellow box-border"
+                    />
+                </div>
+                {initialData && (
+                    <div>
+                        <label htmlFor="status" className="flex flex-col w-full">
+                            Status
+                            <select
+                                name="status"
+                                id="status"
+                                value={status}
+                                onChange={e => setStatus(e.target.value)}
+                                className="border-2 p-2 w-full"
+                            >
+                                {statuses.map(status => (
+                                    <option key={status.value} value={status.value}>
+                                        {status.label}
+                                    </option>
+                                ))}
+                            </select>
+                        </label>
+                    </div>
+                )}
+                <div className="flex place-content-center">
+                    <button
+                        type="submit"
+                        className="bg-gov-green-light hover:bg-gov-green focus:bg-gov-yellow focus:text-gov-black active:outline-2 active:outline-gov-yellow active:bg-gov-green active:text-gov-white hover:cursor-pointer px-4 py-1 text-sm font-medium border-b-2 border-b-black text-gov-white transition box-border"
+                    >
+                        {submitLabel || (initialData ? "Save Edit" : "Create Task")}
+                    </button>
+                </div>
+            </form>
+            {errors && <ErrorMessages errors={errors} />}
+        </>
     );
 }

@@ -52,7 +52,7 @@ router.post(
                 [title, description ?? null, status, due_at ?? null]
             );
 
-            res.status(200).json({
+            res.status(201).json({
                 message: "Created task",
                 data: {
                     task: result.rows[0],
@@ -92,7 +92,7 @@ router.get("/tasks", async (req, res, next) => {
 });
 
 /**
- * GET /api/tasks/:taskId - work in progress
+ * GET /api/tasks/:taskId
  */
 
 router.get(
@@ -103,34 +103,99 @@ router.get(
         const { taskId } = req.params;
 
         try {
-            const taskResult = await pool.query(
+            const result = await pool.query(
                 `
-            SELECT * FROM tasks
-            WHERE id = $1;
-        `,
-                [taskId]
-            );
-
-            const task = taskResult.rows[0];
-
-            const notesResult = await pool.query(
-                `
-                    SELECT content, created_at FROM notes WHERE task_id = $1 ORDER BY created_at ASC
+                SELECT
+                    t.id AS task_id,
+                    t.title,
+                    t.status,
+                    t.due_at,
+                    t.created_at AS task_created_at,
+                    t.updated_at,
+                    n.id AS note_id,
+                    n.content,
+                    n.created_at AS note_created_at
+                FROM tasks t
+                LEFT JOIN notes n ON n.task_id = t.id
+                WHERE t.id = $1
+                ORDER BY n.created_at ASC;
                 `,
                 [taskId]
             );
 
-            const notes = notesResult.rows;
-
-            if (!task) {
+            if (result.rows.length === 0) {
                 return res.status(404).json({ error: "Task not found" });
             }
 
-            if (!notes) {
-                return res.status(404).json({ error: "Notes not found" });
+            const taskRow = result.rows[0];
+
+            const task = {
+                id: taskRow.task_id,
+                title: taskRow.title,
+                status: taskRow.status,
+                due_at: taskRow.due_at,
+                created_at: taskRow.task_created_at,
+                updated_at: taskRow.updated_at,
+                notes: [],
+            };
+
+            result.rows.forEach(row => {
+                if (row.note_id !== null) {
+                    task.notes.push({
+                        id: row.note_id,
+                        content: row.content,
+                        created_at: row.note_created_at,
+                    });
+                }
+            });
+
+            res.status(200).json({ message: "Task retrieved", data: { task } });
+        } catch (error) {
+            next(error);
+        }
+    }
+);
+
+/**
+ * POST /api/tasks/:taskId
+ */
+
+router.post(
+    "/tasks/:taskId",
+    // [
+    //     param('id').isInt().withMessage("Task ID must be an integer"),
+    //     body("content")
+    //         .isString().withMessage("Note must be a string")
+    //         .isLength({ min: 1 }).withMessage("Note cannot be empty")
+    // ],
+    validationHandler,
+    async (req, res, next) => {
+        const { taskId } = req.params;
+
+        const { content } = req.body;
+
+        try {
+            const taskCheck = await pool.query(
+                `
+                    SELECT 1 FROM tasks WHERE id = $1
+                `,
+                [taskId]
+            );
+
+            if (taskCheck.rowCount === 0) {
+                return res.status(404).json({ error: "Task not found" });
             }
 
-            res.status(200).json({ message: "Task retrieved", data: { task, notes } });
+            const insertContent = await pool.query(
+                `
+                    INSERT INTO notes (task_id, content) VALUES ($1, $2) RETURNING *
+                `,
+                [taskId, content]
+            );
+
+            const note = insertContent.rows[0];
+
+            res.status(201).json({ message: "Note added", data: { note } });
         } catch (error) {
             next(error);
         }
@@ -211,7 +276,7 @@ router.delete(
                 return res.status(404).json({ message: "Selected task doesn't exist. Choose another." });
             }
 
-            res.status(200).json({
+            res.status(204).json({
                 message: `Deleted task`,
                 data: {
                     task,

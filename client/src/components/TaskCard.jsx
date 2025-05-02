@@ -78,7 +78,7 @@ export default function TaskCard({ task, refetchTasks }) {
                             <UseAnimations animation={edit} strokeColor="#FFFFFF" title="Edit" />
                         </button>
                     </div>
-                    <ErrorMessages errors={errors} />
+                    {errors && <ErrorMessages errors={errors} />}
                 </div>
                 {showEditModal && (
                     <Modal closeEditModal={closeEditModal}>

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "wouter";
 import Task from "../components/Task";
 import ErrorMessages from "../components/Error";
+import AddNote from "./AddNote";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
@@ -40,9 +41,11 @@ export default function ViewTask() {
     }, [taskId]);
 
     return (
-        <>
+        <section>
             <Task task={task} notes={notes} />
-            <ErrorMessages errors={errors} />
-        </>
+
+            <AddNote taskId={taskId} />
+            {errors && <ErrorMessages errors={errors} />}
+        </section>
     );
 }

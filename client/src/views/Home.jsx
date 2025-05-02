@@ -55,7 +55,7 @@ export default function Home() {
                     <TasksDisplay taskData={taskData} taskQuantity={taskQuantity} refetchTasks={getTasks} />
                 </section>
             </div>
-            <ErrorMessages errors={errors} />
+            {errors && <ErrorMessages errors={errors} />}
         </>
     );
 }
