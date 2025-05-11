@@ -272,6 +272,4 @@ Validation:
 ### ToDo:
 
 - Improve client-side test coverage 
-- Add client-side routing:
-  - Allow user to view single task within a dynamic route.
-  - Add note-taking functionality, allowing user to add notes to each respective task - to be displayed within the dynamically rendered view. 
+- Work on add note functionality
